@@ -16,20 +16,21 @@ Este proyecto es una aplicación de consola en Java que permite convertir entre 
 
 ## Estructura del Proyecto
 
-```
-src/
-  App.java
-  com/aluracursos/challengeconversor/
-    model/
-      Historial.java
-      Moneda.java
-      MonedaOmdb.java
-    services/
-      ConsumoAPI.java
-    view/
-      Menu.java
-lib/
-bin/
+```mermaid
+graph TD
+    A[src/] --> B[com/aluracursos/challengeconversor/]:::dir
+    B --> B1[model/]:::dir
+    B1 --> B11[Historial.java]:::file
+    B1 --> B12[Moneda.java]:::file
+    B1 --> B13[MonedaOmdb.java]:::file
+    B --> B2[services/]:::dir
+    B2 --> B21[ConsumoAPI.java]:::file
+    B --> B3[view/]:::dir
+    B3 --> B31[Menu.java]:::file
+
+    classDef dir fill:#e6e6ff,stroke:#888;
+    classDef file fill:#f8f8ff,stroke:#bbb;
+
 ```
 
 ## Dependencias
