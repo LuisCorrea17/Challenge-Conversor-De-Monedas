@@ -1,8 +1,11 @@
 package com.aluracursos.challengeconversor.view;
 
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 import com.google.gson.Gson;
-
+import com.aluracursos.challengeconversor.model.Historial;
 import com.aluracursos.challengeconversor.model.Moneda;
 import com.aluracursos.challengeconversor.model.MonedaOmdb;
 import com.aluracursos.challengeconversor.services.ConsumoAPI;
@@ -11,7 +14,9 @@ public class Menu {
     private Scanner teclado = new Scanner(System.in);
     private ConsumoAPI consumoAPI = new ConsumoAPI();
     private Gson gson = new Gson();
+    private List<Historial> historialList = new ArrayList<>();
     private Moneda moneda;
+    private DecimalFormat df = new DecimalFormat("#.00");
     private final String URL_BASE = "https://v6.exchangerate-api.com/v6/";
     private final String API_KEY = "6ad1b42e2136fa76bf49cf0d/latest/";
 
@@ -27,7 +32,8 @@ public class Menu {
             System.out.println("3. Peso argentino (ARS)");
             System.out.println("4. Peso mexicano (MXN)");
             System.out.println("5. Peso colombiano (COP)");
-            System.out.println("6. Salir");
+            System.out.println("6. Ver historal de conversiones");
+            System.out.println("7. Salir");
             System.out.println("\nPor favor selecciona la moneda con la que deseas trabajar:");
             int monedaPrincipal = teclado.nextInt();
 
@@ -56,6 +62,17 @@ public class Menu {
                     nombreMoneda = "Peso colombiano";
                     break;
                 case 6:
+                    if (historialList.isEmpty()) {
+                        System.out.println("Aun no tiene conversiones en su historial.");
+                    } else {
+                        System.out.println("\nHistorial de conversiones:\n");
+                        for (Historial historial : historialList) {
+                            System.out.println(historial);
+                        }
+                        System.out.println("\n");
+                    }
+                    break;
+                case 7:
                     System.out.println("Saliendo del programa...");
                     menu = false;
                     break;
@@ -84,7 +101,23 @@ public class Menu {
 
                     double conversion = moneda.convertirMoneda(monedaDestino, cantidad);
 
-                    System.out.println("\n" + cantidad + " " + moneda.getCurrencyCode() + " equivale a " + conversion + " " +
+                    Historial historial = new Historial(
+                            java.time.LocalDateTime.now(),
+                            moneda.getCurrencyCode(),
+                            switch (monedaDestino) {
+                                case 1 -> "USD";
+                                case 2 -> "BRL";
+                                case 3 -> "ARS";
+                                case 4 -> "MXN";
+                                case 5 -> "COP";
+                                default -> "moneda no válida";
+                            },
+                            cantidad,
+                            conversion);
+                    
+                    historialList.add(historial);
+
+                    System.out.println("\n" + cantidad + " " + moneda.getCurrencyCode() + " equivale a " + df.format(conversion) + " " +
                             switch (monedaDestino) {
                                 case 1 -> "USD";
                                 case 2 -> "BRL";
